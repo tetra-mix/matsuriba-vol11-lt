@@ -1,0 +1,26 @@
+{
+  "name": "esp-frontend",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "preact": "^10.27.2"
+  },
+  "devDependencies": {
+    "@preact/preset-vite": "^2.10.2",
+    "esbuild": "^0.25.10",
+    "typescript": "~5.8.3",
+    "vite": "npm:rolldown-vite@7.1.12",
+    "vite-plugin-singlefile": "^2.3.0"
+  },
+  "pnpm": {
+    "overrides": {
+      "vite": "npm:rolldown-vite@7.1.12"
+    }
+  }
+}

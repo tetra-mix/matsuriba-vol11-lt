@@ -1,0 +1,22 @@
+{
+  "manifest_version": 3,
+  "name": "Slides Overlay",
+  "version": "0.1.0",
+  "description": "Googleスライド上にコメント/絵文字をオーバーレイ表示",
+  "permissions": ["storage", "scripting"],
+  "host_permissions": ["https://docs.google.com/presentation/*"],
+  "content_scripts": [
+    {
+      "matches": ["https://docs.google.com/presentation/*"],
+      "js": ["content.js"],
+      "css": ["content.css"],
+      "run_at": "document_end"
+    }
+  ],
+  "background": { "service_worker": "background.js" },
+  "action": {
+    "default_title": "Slides Overlay"
+  },
+  "options_page": "options.html",
+  "icons": { "128": "icon128.png" }
+}

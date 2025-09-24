@@ -1,0 +1,18 @@
+#esp-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;       /* クリックはスライドに通す */
+  z-index: 2147483647;        /* 一番上に載せる */
+}
+#esp-lane .bubble{
+  position:absolute; right:-8vw; white-space:nowrap;
+  font:700 64px/1 system-ui, sans-serif;
+  text-shadow:0 3px 10px rgba(0,0,0,.5);
+  animation:fly 8s linear forwards;
+}
+@keyframes fly { to { transform: translateX(-110vw); } }
+#esp-tiny {
+  position:fixed; left:8px; bottom:8px;
+  font:14px system-ui; color:#fff; text-shadow:0 1px 3px #000;
+}
+.hidden { display:none !important; }
