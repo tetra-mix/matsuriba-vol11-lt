@@ -1,9 +1,14 @@
 import { defineConfig } from 'vite'
 import preact from '@preact/preset-vite'
+import UnoCSS from 'unocss/vite'
 import { viteSingleFile } from 'vite-plugin-singlefile'  
 
 export default defineConfig({
-  plugins: [preact(), viteSingleFile()],
+  plugins: [
+    preact(),
+    UnoCSS(),
+    viteSingleFile()
+  ],
   build: {
     target: 'es2017',           // 出力するJSのターゲット（古すぎず軽め）
     minify: 'esbuild',          // esbuildで高速圧縮
