@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'preact/hooks';
+import { useState, useEffect } from 'preact/hooks';
 import { ReactionButton } from './components/ReactionButton';
 import { getHexColor } from './util/color';
 
@@ -10,19 +10,15 @@ export function App() {
   useEffect(() => {
     const c = getHexColor();
     setColor(c);
-    console.log("Generated color:",c, color);
-  }, []); // 空の依存配列で初回のみ実行
+  }, []);
 
   const handleSubmit = (text: string) => {
-    fetch("http://localhost:8080/vite", {
+    fetch("http://localhost:8080/vote", {
       method: "POST",
       headers: {
         "Content-Type": "application/json", // JSONを送るとき
       },
-      body: JSON.stringify({
-        text: "こんにちは！",
-        color: color,
-      }),
+      body: text
     })
       .then((res) => {
         if (!res.ok) throw new Error("エラー発生: " + res.status);
@@ -37,8 +33,6 @@ export function App() {
 
     alert("「" + text + "」を送信しました！");
   }
-
-
 
   return (
     <div className="w-full bg-gray-100 m-0 min-h-screen flex flex-col items-center justify-center font-sans text-gray-700">
