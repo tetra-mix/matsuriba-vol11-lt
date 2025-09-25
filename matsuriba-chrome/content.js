@@ -69,7 +69,7 @@
     // -----------------------------
     // レイアウト
     // -----------------------------
-    let rows = 6, row = 0, counts = {};
+    let rows = 6, counts = {};
     function recalcRows() {
         // 画面の縦サイズに合わせて段数を調整（最低4、最大8の簡易ロジック）
         const h = window.innerHeight || 1080;
@@ -78,17 +78,19 @@
     }
     recalcRows();
 
-    function pushBubble(text) {
+    function pushBubble(text, color = "#ffffff") {
         const el = document.createElement("div");
         el.className = "bubble";
+        el.style.color = color;
         el.style.position = "absolute";
         el.style.right = "-8vw";
         el.style.whiteSpace = "nowrap";
         el.style.font = "700 64px/1 system-ui, sans-serif";
         el.style.textShadow = "0 3px 10px rgba(0,0,0,.5)";
         el.style.animation = "fly 8s linear forwards";
-        el.style.top = ((row++ % rows) * (window.innerHeight / rows) + 10) +
-            "px";
+        // ランダムな縦位置を設定（上下に少し余白を残す）
+        const randomY = Math.random() * (window.innerHeight - 120) + 60;
+        el.style.top = randomY + "px";
         el.textContent = text;
         lane.appendChild(el);
         el.addEventListener("animationend", () => el.remove());
@@ -210,22 +212,16 @@
                     }
 
                     // 表示するテキスト（絵文字 or テキスト）
-                    const show = d.emoji || d.text || null;
+                    const show = d.text || null;
+                    const color = d.color || "#ffffff";
                     if (!show) {
                         debugLog("No displayable content in message");
                         return;
                     }
 
                     debugLog("Displaying bubble", { content: show });
-                    pushBubble(show);
+                    pushBubble(show, color);
 
-                    const key = d.emoji ? `emoji:${d.emoji}` : "text";
-                    counts[key] = (counts[key] || 0) + 1;
-                    const statsText = Object.entries(counts)
-                        .sort((a, b) => b[1] - a[1])
-                        .slice(0, 5)
-                        .map((x) => x.join("×"))
-                        .join("  ");
                     tiny.textContent = statsText || "Connected";
                     debugLog("Updated statistics", {
                         counts,
@@ -273,36 +269,4 @@
         }
     });
 
-    // 表示/非表示切替（Ctrl+Shift+O） & デバッグ切替（Ctrl+Shift+D）
-    document.addEventListener("keydown", (ev) => {
-        if (ev.ctrlKey && ev.shiftKey && ev.code === "KeyO") {
-            root.classList.toggle("hidden");
-            const isHidden = root.classList.contains("hidden");
-            debugLog(
-                `Overlay visibility toggled: ${
-                    isHidden ? "hidden" : "visible"
-                }`,
-            );
-        }
-        if (ev.ctrlKey && ev.shiftKey && ev.code === "KeyD") {
-            window.matsuribaDebugMode = !window.matsuribaDebugMode;
-            localStorage.setItem(
-                "matsuribaDebugMode",
-                window.matsuribaDebugMode.toString(),
-            );
-            debugLog(
-                `Debug mode toggled: ${
-                    window.matsuribaDebugMode ? "ON" : "OFF"
-                }`,
-            );
-
-            if (window.matsuribaDebugMode) {
-                tiny.style.border = "2px solid #ff0000";
-                tiny.title = "Debug mode: ON - Check console for detailed logs";
-            } else {
-                tiny.style.border = "";
-                tiny.title = "";
-            }
-        }
-    });
 })();

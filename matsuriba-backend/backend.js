@@ -10,6 +10,7 @@ app.use(express.json({ limit: "64kb" }));
 app.use((req, res, next) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Headers", "Content-Type, X-KEY");
+  res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
   if (req.method === "OPTIONS") return res.sendStatus(204);
   next();
 });
@@ -34,12 +35,13 @@ function sanitize(s = "") {
 // 参加者 → POST /vote
 app.post("/vote", rateLimit, (req, res) => {
 
-  let { text } = req.body || {};
+  let { text, color } = req.body || {};
   text = sanitize(text || "");
   if (!text.trim()) return res.sendStatus(400);
 
-  broadcast(JSON.stringify({ text, ts: Date.now() }));
-  res.sendStatus(204);
+  broadcast(JSON.stringify({ text, color, ts: Date.now() }));
+  res.sendStatus(200);
+  res.send(JSON.stringify({ status: "ok" }));
 });
 
 // 発表PC → WS /overlay

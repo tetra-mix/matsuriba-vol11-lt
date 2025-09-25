@@ -13,24 +13,14 @@ export function App() {
   }, []);
 
   const handleSubmit = (text: string) => {
-    fetch("http://matsuriba-backend.fairyguide.dev/vote", {
+    fetch("https://matsuriba-backend.fairyguide.dev/vote", {
       method: "POST",
       headers: {
         "Content-Type": "application/json", // JSONを送るとき
       },
-      body: text
+      body: JSON.stringify({ text, color }),
     })
-      .then((res) => {
-        if (!res.ok) throw new Error("エラー発生: " + res.status);
-        return res.json(); // JSONで返ってくるなら
-      })
-      .then((data) => {
-        console.log("サーバーからのレスポンス:", data);
-      })
-      .catch((err) => {
-        console.error(err);
-      });
-
+    
     alert("「" + text + "」を送信しました！");
   }
 
