@@ -2,63 +2,66 @@
 #include <WiFi.h>
 #include <ESPAsyncWebServer.h>
 #include <LittleFS.h>
+#include <M5Unified.h>
 
-const char* ssid = "Fairyguide_Connect";
-const char* password = "password";
+const char *ssid = "your-ssid";
+const char *password = "your-password";
+
+int activeClients = 0;
 
 AsyncWebServer server(80);
 
-String getContentType(String filename) {
-  if (filename.endsWith(".htm")) return "text/html";
-  else if (filename.endsWith(".html")) return "text/html";
-  else if (filename.endsWith(".css")) return "text/css";
-  else if (filename.endsWith(".js")) return "application/javascript";
-  else if (filename.endsWith(".json")) return "application/json";
-  else if (filename.endsWith(".png")) return "image/png";
-  else if (filename.endsWith(".jpg")) return "image/jpeg";
-  else if (filename.endsWith(".ico")) return "image/x-icon";
-  else if (filename.endsWith(".svg")) return "image/svg+xml";
-  return "text/plain";
+IPAddress local_IP(172, 20, 10, 5);
+IPAddress gateway(172, 20, 10, 1);
+IPAddress subnet(255, 255, 255, 240);
+
+void sendIndex(AsyncWebServerRequest *req)
+{
+  activeClients++;
+  auto *res = req->beginResponse(LittleFS, "/index.html.gz", "text/html");
+  res->addHeader("Content-Encoding", "gzip");
+  res->addHeader("Cache-Control", "public, max-age=31536000, immutable");
+  req->send(res);
 }
 
-void setup() {
+void setup()
+{
   Serial.begin(115200);
-
-  // LittleFSをマウント
-  if (!LittleFS.begin(true)) {
-    Serial.println("LittleFS mount failed!");
-    return;
+  M5.begin();
+  if (!WiFi.config(local_IP, gateway, subnet))
+  {
+    Serial.println("STA Failed to configure");
   }
-  Serial.println("LittleFS mounted.");
-
-  // Wi-Fiに接続
   WiFi.begin(ssid, password);
-  Serial.print("Connecting to WiFi");
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
+  M5.Lcd.setTextSize(2);
+  M5.Lcd.print("WiFi Start");
+  while (WiFi.status() != WL_CONNECTED)
+  {
+    delay(300);
     Serial.print(".");
+    M5.Lcd.print(".");
   }
-  Serial.println("\nConnected!");
-  Serial.println(WiFi.localIP()); // ← このIPでアクセス
+  Serial.println("\nConnected as STA:");
+  Serial.println(WiFi.localIP());
+  M5.Lcd.fillScreen(TFT_BLACK);
+  M5.Lcd.setCursor(0, 0);
+  M5.Lcd.printf("IP:\n%s\n", WiFi.localIP().toString().c_str());
 
-  // ルートで index.html を返す
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request) {
-    request->send(LittleFS, "/index.html", "text/html");
-  });
-
-  // その他のファイルも配信
-  server.onNotFound([](AsyncWebServerRequest *request) {
-    String path = request->url();
-    if (LittleFS.exists(path)) {
-      request->send(LittleFS, path, getContentType(path));
-    } else {
-      request->send(404, "text/plain", "Not found");
-    }
-  });
-
+  LittleFS.begin(true);
+  server.on("/", HTTP_GET, sendIndex);
+  server.onNotFound([](AsyncWebServerRequest *req)
+                    { req->send(404, "text/plain", "404 not found"); });
   server.begin();
+  delay(5000);
+  M5.Lcd.setTextSize(10);
+  M5.Lcd.setCursor(0, 0);
 }
 
-void loop() {
-  // 特に処理不要（AsyncWebServer が非同期で動作）
+void loop()
+{
+  M5.Lcd.fillScreen(TFT_BLACK);
+  M5.Lcd.printf("%d", activeClients);
+  M5.Lcd.setCursor(0, 0);
+  M5.update();
+  delay(1000);
 }
