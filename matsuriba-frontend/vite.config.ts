@@ -1,13 +1,19 @@
 import { defineConfig } from 'vite'
 import preact from '@preact/preset-vite'
 import UnoCSS from 'unocss/vite'
-import { viteSingleFile } from 'vite-plugin-singlefile'  
+import { viteSingleFile } from 'vite-plugin-singlefile'
+import viteCompression from "vite-plugin-compression"
 
 export default defineConfig({
   plugins: [
     preact(),
     UnoCSS(),
-    viteSingleFile()
+    viteSingleFile(),
+    viteCompression({
+      algorithm: "gzip",
+      ext: ".gz",        // 出力を .gz にする
+      deleteOriginFile: false, // trueにすると .html を消して .gz だけ残す
+    }),
   ],
   build: {
     target: 'es2017',           // 出力するJSのターゲット（古すぎず軽め）

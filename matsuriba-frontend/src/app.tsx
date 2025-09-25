@@ -13,7 +13,7 @@ export function App() {
   }, []);
 
   const handleSubmit = (text: string) => {
-    fetch("http://localhost:8080/vote", {
+    fetch("http://matsuriba-backend.fairyguide.dev/vote", {
       method: "POST",
       headers: {
         "Content-Type": "application/json", // JSONを送るとき
