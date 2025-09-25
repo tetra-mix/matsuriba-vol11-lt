@@ -20,7 +20,7 @@ export function App() {
       },
       body: JSON.stringify({ text, color }),
     })
-    
+
     alert("「" + text + "」を送信しました！");
   }
 
@@ -96,7 +96,7 @@ export function App() {
           </div>
 
           <div>
-            <a href="/" class="text-sm mt-4 text-blue-500 transition hover:text-blue-800 ">GitHubリンク</a>
+            <a href="https://github.com/tetra-mix/matsuriba-vol11-lt" class="text-sm mt-4 text-blue-500 transition hover:text-blue-800 ">GitHubリンク</a>
           </div>
         </div>
 
