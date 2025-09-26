@@ -29,6 +29,9 @@ pnpm start
 * バックエンドサーバー
 * Chrome拡張機能
 
+## プレゼンの画面
+<img src="presentation_assets/presentation.png">
+
 ## 発表資料
 [Googleスライド マイコンでReactをホストする話 @Matsuriba Vol.11](https://docs.google.com/presentation/d/1nhO1_1yLvOO_q2qNGkL4WCX_E2_ZRTEt0IYzfXbToyM/edit?usp=sharing
 )
